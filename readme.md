@@ -15,7 +15,7 @@ Implement Twitter Trends Scrapper
 
 ## Overview
 
-Overview here.
+A scraping code which is modified to take your twitter id and pass and scrap the trending div in twitter and fetch the data to html page. The documentation are provided below for the same.
 
 ## Features
 
