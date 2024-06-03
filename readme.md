@@ -50,6 +50,14 @@ npm install
 
 ## Usage
 
+In server.js:
+```bash
+Change the following:
+const proxies = [
+  "<your proxies>",
+];
+```
+
 Run the server:
 
 ```bash
@@ -70,7 +78,7 @@ computer) and fetch the top 5 trending topics under “What’s Happening”
 section from the homepage.
 [x] To access Twitter, create/use your own Twitter account, since log in
 required to see this page.
-3. Use ProxyMesh such that each new request to scrape the trending topics
+[x] 3. Use ProxyMesh such that each new request to scrape the trending topics
 is sent from a new IP address.
 [x] Create a unique ID for each time the Selenium script is run and store the
 results in a MongoDB database (fields required – unique ID, name of

@@ -1,0 +1,483 @@
+All the scrappy codes: 
+
+code which scrapes data without proxy
+
+// const express = require("express");
+// const { Builder, By, until } = require("selenium-webdriver");
+// const chrome = require("selenium-webdriver/chrome");
+// const moment = require("moment");
+// const uuid = require("uuid");
+// const path = require("path");
+// const bodyParser = require("body-parser");
+
+// const app = express();
+// const port = 3000;
+
+// app.use(bodyParser.json());
+
+// async function scrapeTrends(username, password) {
+//   const options = new chrome.Options();
+//   options.addArguments("--disable-blink-features=AutomationControlled");
+
+//   const driver = await new Builder()
+//     .forBrowser("chrome")
+//     .setChromeOptions(options)
+//     .build();
+
+//   try {
+//     await driver.get(
+//       "https://x.com/i/flow/login?input_flow_data=%7B%22requested_variant%22%3A%22eyJteCI6IjIifQ%3D%3D%22%7D"
+//     );
+
+//     await driver.manage().setTimeouts({ implicit: 10000 });
+//     await driver.manage().window().maximize();
+
+//     const usernameField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="username"]')),
+//       20000
+//     );
+//     await usernameField.sendKeys(username);
+
+//     const nextButton = await driver.wait(
+//       until.elementLocated(By.xpath('//span[text()="Next"]/ancestor::button')),
+//       20000
+//     );
+//     await nextButton.click();
+
+//     const passwordField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="current-password"]')),
+//       20000
+//     );
+//     await passwordField.sendKeys(password);
+
+//     const loginButton = await driver.wait(
+//       until.elementLocated(
+//         By.xpath('//span[text()="Log in"]/ancestor::button')
+//       ),
+//       20000
+//     );
+//     await loginButton.click();
+
+//     const whatsHappeningSection = await driver.wait(
+//       until.elementLocated(By.css('[aria-label="Timeline: Trending now"]')),
+//       20000
+//     );
+
+//     await driver.wait(until.elementIsVisible(whatsHappeningSection), 20000);
+
+//     const trends = await driver.findElements(
+//       By.css('[aria-label="Timeline: Trending now"] span')
+//     );
+//     const topTrends = [];
+
+//     for (let i = 0; i < trends.length; i++) {
+//       const trend = await trends[i].getText();
+//       topTrends.push(trend);
+//     }
+
+//     const uniqueId = uuid.v4();
+//     const endTime = moment().format("YYYY-MM-DD HH:mm:ss");
+//     const result = {
+//       uniqueId,
+//       trends: topTrends,
+//       endTime,
+//     };
+
+//     console.log(result);
+//     return result;
+//   } catch (err) {
+//     console.error("An error occurred:", err);
+//     const pageSource = await driver.getPageSource();
+//     require("fs").writeFileSync("error-page.html", pageSource);
+//     throw err;
+//   } finally {
+//     await driver.quit();
+//   }
+// }
+
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
+
+// app.post("/data", async (req, res) => {
+//   const { username, password } = req.body;
+//   try {
+//     const data = await scrapeTrends(username, password);
+//     res.json(data);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to scrape trends" });
+//   }
+// });
+
+// app.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });
+
+
+
+code which scrapes data with proxy but id password is asked
+
+// const express = require("express");
+// const { Builder, By, until } = require("selenium-webdriver");
+// const chrome = require("selenium-webdriver/chrome");
+// const moment = require("moment");
+// const uuid = require("uuid");
+// const path = require("path");
+// const bodyParser = require('body-parser');
+// const axios = require('axios');
+
+// const app = express();
+// const port = 3000;
+
+// // ProxyMesh settings
+// const proxies = [
+//   "us-ca.proxymesh.com:31280",
+//   // "us-wa.proxymesh.com:31280",
+//   // "fr.proxymesh.com:31280",
+//   // "jp.proxymesh.com:31280",
+//   // "au.proxymesh.com:31280",
+//   // "de.proxymesh.com:31280",
+//   // "nl.proxymesh.com:31280",
+//   // "sg.proxymesh.com:31280",
+//   // "us-il.proxymesh.com:31280",
+//   // "us-tx.proxymesh.com:31280",
+//   // "us-dc.proxymesh.com:31280",
+//   // "us-ny.proxymesh.com:31280",
+//   // "uk.proxymesh.com:31280",
+//   // "ch.proxymesh.com:31280",
+//   // "us-fl.proxymesh.com:31280",
+//   // "in.proxymesh.com:31280",
+//   // "open.proxymesh.com:31280",
+//   // "world.proxymesh.com:31280",
+//   // "usisp.proxymesh.com:31280"
+// ];
+
+// // Function to get a random proxy from the list
+// function getRandomProxy() {
+//   const randomIndex = Math.floor(Math.random() * proxies.length);
+//   return proxies[randomIndex];
+// }
+
+// async function scrapeTrends(username, password) {
+//   const options = new chrome.Options();
+//   options.addArguments("--disable-blink-features=AutomationControlled");
+
+//   const proxy = getRandomProxy();
+//   options.addArguments(`--proxy-server=http://${proxy}`);
+//   // options.addArguments("--headless"); 
+
+//   const driver = await new Builder()
+//     .forBrowser("chrome")
+//     .setChromeOptions(options)
+//     .build();
+
+//   try {
+//     // await driver.get("https://x.com/i/flow/login?input_flow_data=%7B%22requested_variant%22%3A%22eyJteCI6IjIifQ%3D%3D%22%7D");
+//     await driver.get("https://x.com/i/flow/login");
+
+//     await driver.manage().setTimeouts({ implicit: 40000 });
+//     await driver.manage().window().maximize();
+
+//     const usernameField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="username"]')),
+//       20000
+//     );
+//     await usernameField.sendKeys(username);
+
+//     const nextButton = await driver.wait(
+//       until.elementLocated(By.xpath('//span[text()="Next"]/ancestor::button')),
+//       20000
+//     );
+//     await nextButton.click();
+
+//     const passwordField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="current-password"]')),
+//       20000
+//     );
+//     await passwordField.sendKeys(password);
+
+//     const loginButton = await driver.wait(
+//       until.elementLocated(
+//         By.xpath('//span[text()="Log in"]/ancestor::button')
+//       ),
+//       20000
+//     );
+//     await loginButton.click();
+
+//     const whatsHappeningSection = await driver.wait(
+//       until.elementLocated(By.css('[aria-label="Timeline: Trending now"]')),
+//       20000
+//     );
+
+//     await driver.wait(until.elementIsVisible(whatsHappeningSection), 20000);
+
+//     const trends = await driver.findElements(
+//       By.css('[aria-label="Timeline: Trending now"] span')
+//     );
+//     const topTrends = [];
+
+//     for (let i = 0; i < trends.length; i++) {
+//       const trend = await trends[i].getText();
+//       topTrends.push(trend);
+//     }
+
+//     const uniqueId = uuid.v4();
+//     const endTime = moment().format("YYYY-MM-DD HH:mm:ss");
+//     const result = {
+//       uniqueId,
+//       trends: topTrends,
+//       endTime,
+//       proxy
+//     };
+
+//     console.log(result);
+//     return result;
+//   } catch (err) {
+//     console.error("An error occurred:", err);
+//     const pageSource = await driver.getPageSource();
+//     require("fs").writeFileSync("error-page.html", pageSource);
+//     throw err;
+//   } finally {
+//     await driver.quit();
+//   }
+// }
+
+// app.use(bodyParser.json());
+
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
+
+// app.post("/data", async (req, res) => {
+//   const { username, password } = req.body;
+//   try {
+//     const data = await scrapeTrends(username, password);
+//     res.json(data);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to scrape trends" });
+//   }
+// });
+
+// app.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });
+
+
+
+
+
+third code where no headers are being used
+
+  
+// // Run the server using the command: node server.js
+// const express = require("express");
+// const { Builder, By, until } = require("selenium-webdriver");
+// const chrome = require("selenium-webdriver/chrome");
+// const moment = require("moment");
+// const uuid = require("uuid");
+// const path = require("path");
+// const bodyParser = require('body-parser');
+// const fs = require('fs');
+
+// const app = express();
+// const port = 3000;
+
+// // ProxyMesh settings
+// const proxies = [
+//   "us-ca.proxymesh.com:31280",
+//   // "us-wa.proxymesh.com:31280",
+//   // "fr.proxymesh.com:31280",
+//   // "jp.proxymesh.com:31280",
+//   // "au.proxymesh.com:31280",
+//   // "de.proxymesh.com:31280",
+//   // "nl.proxymesh.com:31280",
+//   // "sg.proxymesh.com:31280",
+//   // "us-il.proxymesh.com:31280",
+//   // "us-tx.proxymesh.com:31280",
+//   // "us-dc.proxymesh.com:31280",
+//   // "us-ny.proxymesh.com:31280",
+//   // "uk.proxymesh.com:31280",
+//   // "ch.proxymesh.com:31280",
+//   // "us-fl.proxymesh.com:31280",
+//   // "in.proxymesh.com:31280",
+//   // "open.proxymesh.com:31280",
+//   // "world.proxymesh.com:31280",
+//   // "usisp.proxymesh.com:31280"
+// ];
+
+// // Function to get a random proxy from the list
+// function getRandomProxy() {
+//   const randomIndex = Math.floor(Math.random() * proxies.length);
+//   return proxies[randomIndex];
+// }
+
+// async function scrapeTrends(username, password) {
+//   const options = new chrome.Options();
+//   options.addArguments("--disable-blink-features=AutomationControlled");
+
+//   const proxy = getRandomProxy();
+//   options.addArguments(`--proxy-server=http://${proxy}`);
+//   // options.addArguments("--headless"); 
+
+//   const driver = await new Builder()
+//     .forBrowser("chrome")
+//     .setChromeOptions(options)
+//     .build();
+
+//   try {
+//     // await driver.get("https://x.com/i/flow/login?input_flow_data=%7B%22requested_variant%22%3A%22eyJteCI6IjIifQ%3D%3D%22%7D");
+//     await driver.get("https://x.com/i/flow/login");
+
+//     await driver.manage().setTimeouts({ implicit: 40000 });
+//     await driver.manage().window().maximize();
+
+//     const usernameField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="username"]')),
+//       20000
+//     );
+//     await usernameField.sendKeys(username);
+
+//     const nextButton = await driver.wait(
+//       until.elementLocated(By.xpath('//span[text()="Next"]/ancestor::button')),
+//       20000
+//     );
+//     await nextButton.click();
+
+//     const passwordField = await driver.wait(
+//       until.elementLocated(By.css('input[autocomplete="current-password"]')),
+//       20000
+//     );
+//     await passwordField.sendKeys(password);
+
+//     const loginButton = await driver.wait(
+//       until.elementLocated(
+//         By.xpath('//span[text()="Log in"]/ancestor::button')
+//       ),
+//       20000
+//     );
+//     await loginButton.click();
+
+//     const whatsHappeningSection = await driver.wait(
+//       until.elementLocated(By.css('[aria-label="Timeline: Trending now"]')),
+//       20000
+//     );
+
+//     await driver.wait(until.elementIsVisible(whatsHappeningSection), 20000);
+
+//     const trends = await driver.findElements(
+//       By.css('[aria-label="Timeline: Trending now"] span')
+//     );
+//     const topTrends = [];
+
+//     for (let i = 0; i < trends.length; i++) {
+//       const trend = await trends[i].getText();
+//       topTrends.push(trend);
+//     }
+
+//     const uniqueId = uuid.v4();
+//     const endTime = moment().format("YYYY-MM-DD HH:mm:ss");
+//     const result = {
+//       uniqueId,
+//       trends: topTrends,
+//       endTime,
+//       proxy
+//     };
+
+//     console.log(result);
+//     return result;
+//   } catch (err) {
+//     console.error("An error occurred:", err);
+//     const pageSource = await driver.getPageSource();
+//     fs.writeFileSync("error-page.html", pageSource);
+//     throw err;
+//   } finally {
+//     await driver.quit();
+//   }
+// }
+
+// app.use(bodyParser.json());
+
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
+
+// app.post("/data", async (req, res) => {
+//   const { username, password } = req.body;
+//   try {
+//     const data = await scrapeTrends(username, password);
+//     res.json(data);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to scrape trends" });
+//   }
+// });
+
+// app.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });
+
+
+
+scrappy old html code 
+// <!-- <!DOCTYPE html>
+// <html lang="en">
+//   <head>
+//     <meta charset="UTF-8" />
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+//     <title>Twitter Trends Scraper</title>
+
+//   </head>
+//   <body>
+//     <div class="container">
+//       <div class="element">
+//         <h1>Twitter Trends Scraper</h1>
+//         <form id="scrape-form">
+//           <div class="form-group">
+//             <label for="username">Twitter Username:</label>
+//             <input type="text" id="username" name="username" />
+//           </div>
+//           <div class="form-group">
+//             <label for="password">Twitter Password:</label>
+//             <input type="password" id="password" name="password" />
+//           </div>
+//           <button type="button" id="start-script">Start Script</button>
+//         </form>
+//         <pre id="output"></pre>
+//       </div>
+//     </div>
+
+//     <script>
+//       document.getElementById("start-script").addEventListener("click", async (event) => {
+//         event.preventDefault();
+//         const username = document.getElementById("username").value;
+//         const password = document.getElementById("password").value;
+
+//         document.getElementById("output").textContent = "Fetching data...";
+
+//         try {
+//           const response = await fetch("/data", {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({ username, password }),
+//           });
+
+//           if (!response.ok) {
+//             throw new Error("Failed to fetch data, Please check your credentials.");
+//           }
+
+//           const data = await response.json();
+//           document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+//         } catch (error) {
+//           document.getElementById("output").textContent = "Error: " + error.message;
+//         }
+//       });
+//     </script>
+//   </body>
+// </html>
+//  -->
+
+
+
+
+

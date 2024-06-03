@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Twitter Trends Scraper</title>
-    <!-- <link rel="stylesheet" href="styles.css" /> -->
   </head>
   <body>
     <div class="container">
@@ -43,7 +42,7 @@
           });
 
           if (!response.ok) {
-            throw new Error("Failed to fetch data, Please check your credentials.");
+            throw new Error("Failed to fetch data");
           }
 
           const data = await response.json();
@@ -55,4 +54,3 @@
     </script>
   </body>
 </html>
-

@@ -1,3 +1,4 @@
+//old scraper code which scrapes in console only
 // scraper.js
 
 const { Builder, By, Key, until } = require("selenium-webdriver");

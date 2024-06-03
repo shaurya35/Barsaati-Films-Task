@@ -1,4 +1,3 @@
-
 const express = require("express");
 const { Builder, By, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
@@ -6,27 +5,50 @@ const moment = require("moment");
 const uuid = require("uuid");
 const path = require("path");
 const bodyParser = require('body-parser');
+const fs = require('fs');
+require('dotenv').config(); 
 
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+const proxies = [
+  process.env.PROXY_URL,
+];
+
+function getRandomProxy() {
+  const randomIndex = Math.floor(Math.random() * proxies.length);
+  return proxies[randomIndex];
+}
 
 async function scrapeTrends(username, password) {
   const options = new chrome.Options();
   options.addArguments("--disable-blink-features=AutomationControlled");
+
+  const proxy = getRandomProxy();
+  options.addArguments(`--proxy-server=http://${proxy}`);
 
   const driver = await new Builder()
     .forBrowser("chrome")
     .setChromeOptions(options)
     .build();
 
-  try {
-    await driver.get(
-      "https://x.com/i/flow/login?input_flow_data=%7B%22requested_variant%22%3A%22eyJteCI6IjIifQ%3D%3D%22%7D"
-    );
 
-    await driver.manage().setTimeouts({ implicit: 10000 });
+  await driver.executeScript(`
+    const open = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function() {
+      this.addEventListener('readystatechange', function() {
+        if (this.readyState === 1) {
+          this.setRequestHeader('X-ProxyMesh-Prefer-IP', '223.187.80.18:31280');
+        }
+      }, false);
+      open.apply(this, arguments);
+    };
+  `);
+
+  try {
+    await driver.get("https://x.com/i/flow/login");
+
+    await driver.manage().setTimeouts({ implicit: 40000 });
     await driver.manage().window().maximize();
 
     const usernameField = await driver.wait(
@@ -78,6 +100,7 @@ async function scrapeTrends(username, password) {
       uniqueId,
       trends: topTrends,
       endTime,
+      proxy
     };
 
     console.log(result);
@@ -85,12 +108,14 @@ async function scrapeTrends(username, password) {
   } catch (err) {
     console.error("An error occurred:", err);
     const pageSource = await driver.getPageSource();
-    require("fs").writeFileSync("error-page.html", pageSource);
+    fs.writeFileSync("error-page.html", pageSource);
     throw err;
   } finally {
     await driver.quit();
   }
 }
+
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
@@ -109,4 +134,3 @@ app.post("/data", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
