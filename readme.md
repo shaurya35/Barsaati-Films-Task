@@ -11,6 +11,7 @@ Implement Twitter Trends Scrapper
 - [Usage](#usage)
 - [Contributors](#contributors)
 - [Tasks](#Tasks)
+- [Note](#Note)
 
 
 ## Overview
@@ -87,6 +88,6 @@ used). We won’t need anything else.
 - [x] Create a simple HTML page which has a button, which when clicked, will
 run the Selenium script, and then show results in the following manner:
 
-# Note
+## Note
 - Expected Result Screenshot: https://github.com/shaurya35/Barsaati-Films-Task/blob/main/Screenshots/Result.png
 - Since Proxy is being used, a common error: https://github.com/shaurya35/Barsaati-Films-Task/blob/main/Screenshots/AuthError.png 
