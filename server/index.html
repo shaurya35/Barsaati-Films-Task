@@ -7,33 +7,33 @@
     <!-- <link rel="stylesheet" href="styles.css" /> -->
   </head>
   <body>
-<div class="container">
-  <div class="element">
-    <h1>Twitter Trends Scraper</h1>
-    <form>
-      <div class="form-group">
-        <label for="username">Twitter Username:</label>
-        <input type="text" id="username" name="username" />
+    <div class="container">
+      <div class="element">
+        <h1>Twitter Trends Scraper</h1>
+        <form id="scrape-form">
+          <div class="form-group">
+            <label for="username">Twitter Username:</label>
+            <input type="text" id="username" name="username" />
+          </div>
+          <div class="form-group">
+            <label for="password">Twitter Password:</label>
+            <input type="password" id="password" name="password" />
+          </div>
+          <button type="button" id="start-script">Start Script</button>
+        </form>
+        <pre id="output"></pre>
       </div>
-      <div class="form-group">
-        <label for="password">Twitter Password:</label>
-        <input type="password" id="password" name="password" />
-      </div>
-      <button id="start-script">Start Script</button>
-    </form>
-    <pre id="output"></pre>
-  </div>
-</div>
+    </div>
 
     <script>
-      document
-        .getElementById("start-script")
-        .addEventListener("click", async () => {
-          const username = document.getElementById("username").value;
-          const password = document.getElementById("password").value;
+      document.getElementById("start-script").addEventListener("click", async (event) => {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-          document.getElementById("output").textContent = "Fetching data...";
+        document.getElementById("output").textContent = "Fetching data...";
 
+        try {
           const response = await fetch("/data", {
             method: "POST",
             headers: {
@@ -42,13 +42,17 @@
             body: JSON.stringify({ username, password }),
           });
 
+          if (!response.ok) {
+            throw new Error("Failed to fetch data, Please check your credentials.");
+          }
+
           const data = await response.json();
-          document.getElementById("output").textContent = JSON.stringify(
-            data,
-            null,
-            2
-          );
-        });
+          document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          document.getElementById("output").textContent = "Error: " + error.message;
+        }
+      });
     </script>
   </body>
 </html>
+

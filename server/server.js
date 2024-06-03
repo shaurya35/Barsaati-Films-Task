@@ -1,4 +1,3 @@
-// 
 
 const express = require("express");
 const { Builder, By, until } = require("selenium-webdriver");
@@ -110,3 +109,4 @@ app.post("/data", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
